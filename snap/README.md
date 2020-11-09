@@ -1,14 +1,14 @@
-# Unofficial Snap Packaging for [Project]
+# Unofficial Snap Packaging for JBIG2 Encoder
 <!--
 	Use the Staticaly service for easy access to in-repo pictures:
 	https://www.staticaly.com/
 -->
-![(Placeholder) Icon of [Project]](https://cdn.staticaly.com/gh/Lin-Buo-Ren/snapcrafters-template-plus/bea3bc56/snap/gui/my-awesome-app.png "(Placeholder) Icon of [Project]")
+![(Placeholder) Icon of JBIG2 Encoder](https://cdn.staticaly.com/gh/Lin-Buo-Ren/snapcrafters-template-plus/bea3bc56/snap/gui/jbig2enc.png "(Placeholder) Icon of JBIG2 Encoder")
 
-**This is the unofficial snap for [Project]**, *"Single-line elevator pitch for your amazing snap"*. It works on Ubuntu, Fedora, Debian, and other major Linux distributions.
+**This is the unofficial snap for JBIG2 Encoder**, *"Single-line elevator pitch for your amazing snap"*. It works on Ubuntu, Fedora, Debian, and other major Linux distributions.
 
 <!-- Uncomment and modify this when you are provided a build status badge
-[![Build Status Badge of the `my-awesome-app` Snap](https://build.snapcraft.io/badge/_repo_owner_id_/_repo_name_id_.svg "Build Status of the `my-awesome-app` snap")](https://build.snapcraft.io/user/_repo_owner_id_/_repo_name_id_)
+[![Build Status Badge of the `jbig2enc` Snap](https://build.snapcraft.io/badge/_repo_owner_id_/_repo_name_id_.svg "Build Status of the `jbig2enc` snap")](https://build.snapcraft.io/user/_repo_owner_id_/_repo_name_id_)
 -->
 
 <!-- Uncomment and modify this when you have a screenshot
@@ -23,24 +23,24 @@ Published for <img src="http://anything.codes/slack-emoji-for-techies/emoji/tux.
 
 ### In a Terminal
     # Install the snap #
-    sudo snap install --channel=edge --devmode my-awesome-app
-    #sudo snap install --channel=beta my-awesome-app
-    #sudo snap install my-awesome-app
+    sudo snap install --channel=edge --devmode jbig2enc
+    #sudo snap install --channel=beta jbig2enc
+    #sudo snap install jbig2enc
     
     # Connect the snap to essential security confinement interfaces #
     ## (Proper reasoning for connecting _plug_name_) ##
-    sudo snap connect my-awesome-app:_plug_name_
+    sudo snap connect jbig2enc:_plug_name_
     
     # Connect the snap to optional security confinement interfaces #
     ## (Proper reasoning for connecting _plug_name_) ##
-    sudo snap connect my-awesome-app:_plug_name_
+    sudo snap connect jbig2enc:_plug_name_
     
     # Launch the application #
-    my-awesome-app
-    snap run my-awesome-app # If you have another existing installation
+    jbig2enc
+    snap run jbig2enc # If you have another existing installation
 
 ### The Graphical Way
-[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/my-awesome-app)
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/jbig2enc)
 -->
 
 <!-- Uncomment when you have test results

@@ -1,6 +1,6 @@
 %YAML 1.1
 ---
-# Snapcraft Recipe for [Project]
+# Snapcraft Recipe for JBIG2 Encoder
 # ------------------------------
 # This file is in the YAML data serialization format:
 # http://yaml.org
@@ -17,30 +17,36 @@
 # All following comments, including this one, are designed to be stripped
 # before contributing the recipe to the upstream
 
-# [Project], my-awesome-app, my-awesome-app-launch
+# JBIG2 Encoder, jbig2enc, jbig2enc-launch
 # are placeholders text meant to be replaced by appropriate content
-name: my-awesome-app
-title: My Awesome App.
-summary: Single-line elevator pitch for your amazing snap under 79 chars.
+name: jbig2enc
+title: JBIG2 Encoder
+summary: An encoder for JBIG2
 description: |
-  This is my-awesome-app's description. You have a paragraph or two to tell
-  the most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+  JBIG2 encodes bi-level (1 bpp) images using a number of clever tricks to get better compression than G4. This encoder can:
 
-  This is the demonstration app of the Snapcrafters Template Plus:
-  https://github.com/Lin-Buo-Ren/snapcrafters-template-plus
+  - Generate JBIG2 files, or fragments for embedding in PDFs
+  - Generic region encoding
+  - Perform symbol extraction, classification and text region coding
+  - Perform refinement coding and,
+  - Compress multipage documents
+
+  **Snap-specific notes**
+
+  This is NOT an official distribution of JBIG2 Encoder, please refer the snap's own issue tracker for support:
+
+  https://github.com/Lin-Buo-Ren/jbig2enc-snap/issues
 
 # The path of icon to represent the snap, relative to the source tree directory
 # Only PNG or SVG image is supported, dimension must be greater than 256x256px
-icon: snap/gui/my-awesome-app.png
+icon: snap/gui/jbig2enc.png
 
 # The license of this application, in SPDX format
 # NOTE: Currently only supports SPDX 2.1 license expressions, as described in Appendix IV of
 # https://spdx.org/spdx-specification-21-web-version
 # Supported expressions:
 # https://github.com/snapcore/snapd/blob/HEAD/spdx/licenses.go
-#license:
+license: Apache-2.0
 
 # Version string just for humans, typically '1.2+git' or '1.3.2'
 # The wrapping single quotes are often required to avoid the version string
@@ -61,7 +67,7 @@ assumes:
 
 # Base runtime
 # The common runtime for the snap to run on, or `bare` for static linked applications
-base: core18
+base: core
 # https://docs.snapcraft.io/snapcraft-top-level-metadata/8334#heading--base
 
 # Security confinement
@@ -101,13 +107,13 @@ parts:
     - -bin/README.*
 
   # Programs to modify the behavior of each step of the snapcraft lifecycles
-  scriptlets:
-    source: snap/local/scriptlets
-    plugin: dump
-    organize:
-      '*': scriptlets/
-    prime:
-    - -*
+  # scriptlets:
+  #   source: snap/local/scriptlets
+  #   plugin: dump
+  #   organize:
+  #     '*': scriptlets/
+  #   prime:
+  #   - -*
 
   # Stage snap for fixing the glibc locales(and gnu gettext I18N support)
   # This part is only required for non GUI apps that don't uses the desktop-launch launchers
@@ -130,83 +136,100 @@ parts:
     #
     #- locales-all
 
-  # Remote part for support of various desktop technologies
-  # Refer: https://github.com/ubuntu/snapcraft-desktop-helpers/blob/master/snapcraft.yaml
-  desktop-gnome-platform:
-    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
-    source-depth: 1
-    source-subdir: gtk
-
-    plugin: make
+  # Check out the tagged release revision if it isn't promoted to the stable channel
+  # https://forum.snapcraft.io/t/selective-checkout-check-out-the-tagged-release-revision-if-it-isnt-promoted-to-the-stable-channel/10617
+  selective-checkout:
+    source: https://github.com/Lin-Buo-Ren/selective-checkout.git
+    source-tag: v2.0.2
+    plugin: dump
     build-packages:
-    - gcc
-    override-build: |
-      snapcraftctl build
-      mkdir -pv $SNAPCRAFT_PART_INSTALL/gnome-platform
-
-  # Integrate custom dialogs in your snap - doc - snapcraft.io
-  # https://forum.snapcraft.io/t/integrate-custom-dialogs-in-your-snap/10825
-  zenity-integration:
-    plugin: nil
-    stage-snaps:
-    - zenity-integration
-
+      # Scriptlet dependencies
+      - curl
+      - jq
+      - sed
+      - git
+    stage:
+      - scriptlets/selective-checkout
+    prime:
+      - -*
+  
   main:
     after:
-    # for patch-desktop-entries.*
-    - patching
+      - patching
+      - selective-checkout
 
-    # for override-pull script
-    - scriptlets
-
-    source: .
-    #source-type:
-    #source-branch:
-    #source-tag:
-    #source-depth:
+    source: https://github.com/agl/jbig2enc.git
     override-pull: |
       set -o nounset
 
       snapcraftctl pull
 
-      "${SNAPCRAFT_STAGE}"/scriptlets/main-adopt-info
+      "${SNAPCRAFT_STAGE}"/scriptlets/selective-checkout \
+        --append-packaging-revision
 
-    plugin: dump
-    organize:
-      my-awesome-app: bin/
+    plugin: autotools
+    build-packages:
+      - libleptonica-dev
+      - zlib1g-dev
+    stage-packages:
+      - liblept5
+      - python
+    filesets:
+      executables:
+        - bin/*
+        - usr/bin/python*
+      shared-libs:
+        - '**/*.so*'
+      copyright:
+        - '**/COPYING'
+        - '**/copyright'
+      python-runtime:
+        - usr/lib/python*
     stage:
-    - bin/*
+      - $executables
+      - $shared-libs
+      - $copyright
+      - $python-runtime
+    override-stage: |
+      set -o nounset
 
-    override-prime: |
-      set \
-        -o nounset
+      snapcraftctl stage
 
-      snapcraftctl prime
-
-      "${SNAPCRAFT_STAGE}"/patching/patch-desktop-entries.bash
+      patch \
+        --strip=1 \
+        < "${SNAPCRAFT_STAGE}"/patching/fix-improper-pdf-py-shebang.patch
 
 # Apps that are exposed by the snap package
 # If the _app_name_ is identical with the _snap_name_ it can be directly run
 # with `_snap_name_` or `snap run _snap_name_` commands, otherwise it can only be run
 # via `_snap_name_._app_name_` or `snap run _snap_name_._app_name_`
 apps:
-  my-awesome-app:
+  jbig2enc:
     # The adapter to set up runtime environment at the launch of the snap
     # NOTE: The `command-chain` property is only supported by the `full` adapter
     adapter: full
 
     # An *relative path* to an executable file root from the `prime` directory to be executed, and its command-line arguments
     # NOTE: The right angle bracket at the beginning of the value of the `command` keyword starts a YAML folded style block scalar, refer the following spec document for more info: http://yaml.org/spec/1.2/spec.html#id2796251
-    command: bin/my-awesome-app
+    command: bin/jbig2
 
     # The commands that are run, in order, before running the one specified by the `command` key
     command-chain:
-    - bin/desktop-launch
-    - bin/my-awesome-app-launch
+      - bin/jbig2enc-launch
 
-    # If the providing part of the app. has a desktop entry, specify its path relative to the `prime` directory.
-    # If the packaging target doesn't provide a desktop entry, ignore the `desktop` key and implement a desktop entry in `/snap/gui`
-    #desktop: share/applications/my-awesome-app.desktop
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+
+  pdf:
+    adapter: full
+    command: bin/pdf.py
+    command-chain:
+      - bin/jbig2enc-launch
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONHOME: $SNAP/usr
 
 # Refer the following documentation for asserting interface plugs and slots in a security confined snap:
 # Interface management - doc - snapcraft.io
@@ -215,39 +238,9 @@ apps:
 # https://docs.snapcraft.io/supported-interfaces/7744
 # Non-A/C: Non-autoconnect interface
 plugs:
-  # Common desktop interfaces
-  # https://forum.snapcraft.io/t/the-desktop-interfaces/2042
-  desktop:
-  desktop-legacy:
-  unity7:
-  wayland:
-
-  # GNOME and Gtk runtime via content sharing
-  # https://forum.snapcraft.io/t/desktop-app-support-gtk/6834
-  gnome-3-28-1804:
-    interface: content
-    target: $SNAP/gnome-platform
-    default-provider: gnome-3-28-1804
-
-  # Gtk Common Themes support
-  # https://forum.snapcraft.io/t/how-to-use-the-system-gtk-theme-via-the-gtk-common-themes-snap/6235
-  gsettings:
-  gtk-3-themes:
-    interface: content
-    target: $SNAP/data-dir/themes
-    default-provider: gtk-common-themes
-  icon-themes:
-    interface: content
-    target: $SNAP/data-dir/icons
-    default-provider: gtk-common-themes
-  sound-themes:
-    interface: content
-    target: $SNAP/data-dir/sounds
-    default-provider: gtk-common-themes
-
   # Regular files access
-  #home:
-  #removable-media: # Non-A/C
+  home:
+  removable-media: # Non-A/C
 
   # Application-specific files access
   # The auto-connection requires store grant
@@ -256,13 +249,8 @@ plugs:
   #user-wide-configs:
     #interface: personal-files
     #read:
-    #- $HOME/.config/my-awesome-app
+    #- $HOME/.config/jbig2enc
   #system-wide-configs:
     #interface: system-files
     #read:
-    #- /etc/my-awesome-app
-
-  # Network access
-  #network:
-
-#slots:
+    #- /etc/jbig2enc

@@ -1,0 +1,8 @@
+--- a/bin/pdf.py	2020-11-10 04:24:43.502722879 +0800
++++ b/bin/pdf.py	2020-11-10 04:25:23.782746289 +0800
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # Copyright 2006 Google Inc.
+ # Author: agl@imperialviolet.org (Adam Langley)
+ #

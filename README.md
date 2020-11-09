@@ -1,15 +1,15 @@
-# Unofficial Snap Packaging for [Project]
-This is the unofficial snap packaging for [Project], [Snaps are universal Linux packages](https://snapcraft.io).
+# Unofficial Snap Packaging for JBIG2 Encoder
+This is the unofficial snap packaging for JBIG2 Encoder, [Snaps are universal Linux packages](https://snapcraft.io).
 
 Refer [snap/README.md](snap/README.md) for user-oriented information.
 
 ## Remaining Tasks
-Snapcrafters ([join us](https://forum.snapcraft.io/t/join-snapcrafters/1325)) are working to land snap install documentation and the [snapcraft.yaml](https://github.com/Lin-Buo-Ren/snapcrafters-template-plus/blob/master/snap/snapcraft.yaml) upstream so [Project] can authoritatively publish future releases.
+Snapcrafters ([join us](https://forum.snapcraft.io/t/join-snapcrafters/1325)) are working to land snap install documentation and the [snapcraft.yaml](https://github.com/Lin-Buo-Ren/snapcrafters-template-plus/blob/master/snap/snapcraft.yaml) upstream so JBIG2 Encoder can authoritatively publish future releases.
 
 - [x] Create _snap_name_-snap (or any valid name you prefer) repository via the [Use this template](https://github.com/Lin-Buo-Ren/snapcrafters-template-plus/generate) button above
   - It is recommended to *avoid forking the template repository* unless you're working on the template itself because you can only fork a repository once
 - [ ] Update the description of the repository
-- [ ] Update logos and references to `[Project]`, `my-awesome-app` and other placeholder names in `README.md`, `snap/README.md`, and `snap/snapcraft.yaml`
+- [ ] Update logos and references to `JBIG2 Encoder`, `jbig2enc` and other placeholder names in `README.md`, `snap/README.md`, and `snap/snapcraft.yaml`
 - [ ] Add upstream contact information to this `README.md`
 - [ ] Create a snap that runs in `devmode`, [or in `classic` confinement if that's not possible](https://forum.snapcraft.io/t/subtle-differences-between-devmode-and-classic-confinement-snaps/7267)
     - [ ] If the snap must be packaged under `classic` confinement, file a [classic confinement request](https://forum.snapcraft.io/t/process-for-reviewing-classic-confinement-snaps/1460) topic in the Snapcraft Forum, under the `store` topic category - [template](https://github.com/Lin-Buo-Ren/snapcrafters-template-plus/wiki/Classic-Confinement-Request-Template) - [link]()
